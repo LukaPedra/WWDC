@@ -11,7 +11,54 @@ import Foundation
 
 
 class GameScene: SKScene{
-    let earth = SKSpriteNode(imageNamed: "Earth")
+    lazy var earth: SKSpriteNode = {
+        let node = SKSpriteNode(imageNamed: "Earth")
+        node.name = "earth"
+        node.position.x = UIScreen.main.bounds.width/2
+        node.position.y = UIScreen.main.bounds.height/2 - 300
+        node.zPosition = 0
+        node.size.height = 800
+        node.size.width = 800
+        return node
+    }()
+    lazy var Atmosphere: SKSpriteNode = {
+        let node = SKSpriteNode(imageNamed: "Atmosphere")
+        node.name = "Atmosphere"
+        node.position.x = UIScreen.main.bounds.width/2
+        node.position.y = UIScreen.main.bounds.height/2 - 300
+        node.zPosition = 0
+        node.size.height = 800
+        node.size.width = 800
+        
+        
+        return node
+    }()
+    
+    lazy var Planet: SKSpriteNode = {
+        
+        let node = SKSpriteNode(imageNamed: "Planet")
+        print(String(parent?.name ?? "No parent"))
+        node.name = "Planet"
+        node.position.x = (parent?.position.x ?? 0)!
+        node.position.y = (parent?.position.y ?? 0)!
+        node.zPosition = 1
+        node.size.height = self.frame.height
+        node.size.width = self.frame.width
+        return node
+    }()
+    
+    lazy var Shadow: SKSpriteNode = {
+        let node = SKSpriteNode(imageNamed: "Shadow")
+        node.name = "Shadow"
+        node.position.x = 0
+        node.position.y = 0
+        node.zPosition = 2
+        node.size.height = self.frame.height
+        node.size.width = self.frame.width
+        return node
+    }()
+    
+    //let earth = SKSpriteNode(imageNamed: "Earth")
     
     override func didMove(to view: SKView) {
         if let particles = SKEmitterNode(fileNamed: "StarField") {
@@ -20,15 +67,13 @@ class GameScene: SKScene{
             particles.advanceSimulationTime(60)
             addChild(particles)
         }
-        earth.name = "earth"
-        earth.position.x = UIScreen.main.bounds.width/2
-        earth.position.y = UIScreen.main.bounds.height/2
-        earth.zPosition = 0
-        earth.size.height = 200
-        earth.size.width = 200
+        
 
         
-        addChild(earth)
+        Atmosphere.addChild(Planet)
+        addChild(Atmosphere)
+        
+        
     }
     
     

@@ -25,11 +25,49 @@ class GameScene: SKScene{
         let node = SKSpriteNode(imageNamed: "Atmosphere")
         node.name = "Atmosphere"
         node.position.x = UIScreen.main.bounds.width/2
-        node.position.y = UIScreen.main.bounds.height/2 - 300
+        node.position.y = UIScreen.main.bounds.height/2 //- 300
         node.zPosition = 0
-        node.size.height = 800
-        node.size.width = 800
+        node.size.height = 300
+        node.size.width = 300
+
         
+        let planet = SKSpriteNode(imageNamed: "Planet")
+      //  node.addChild(planet)
+        print(String(planet.parent?.name ?? "No parent"))
+        planet.name = "Planet"
+        planet.position.x = 0
+        planet.position.y = 0
+        
+        planet.size.height = node.frame.height
+        planet.size.width = node.frame.width
+//
+        let shadow = SKSpriteNode(imageNamed: "Shadow")
+        planet.addChild(shadow)
+        shadow.name = "Shadow"
+        shadow.position.x = 0
+        shadow.position.y = 0
+        shadow.zPosition = 2
+        shadow.size.height = shadow.parent?.frame.height ?? 0
+        shadow.size.width = shadow.parent?.frame.height ?? 0
+        
+        
+        planet.addChild(Clouds)
+        planet.zPosition = 1
+//        Clouds.targetNode = planet
+//        Clouds.zPosition = 1
+        
+        let cropNode = SKCropNode()
+        
+        let maskNode = SKShapeNode(circleOfRadius: planet.size.width/2.0 - 10)
+        maskNode.fillColor = .white
+
+        cropNode.maskNode = maskNode//SKSpriteNode(color: .white, size: planet.size)
+        cropNode.position = CGPoint(x: 0, y: 0)
+        cropNode.zPosition = 3
+        cropNode.addChild(planet)
+
+        node.addChild(cropNode)
+
         
         return node
     }()
@@ -53,10 +91,34 @@ class GameScene: SKScene{
         node.position.x = 0
         node.position.y = 0
         node.zPosition = 2
-        node.size.height = self.frame.height
-        node.size.width = self.frame.width
+        node.size.height = self.parent?.frame.height ?? 0
+        node.size.width = self.parent?.frame.height ?? 0
         return node
     }()
+    lazy var Clouds: SKEmitterNode = {/**/
+        let node = SKEmitterNode(fileNamed: "Clouds")!
+        let cropNode = SKCropNode()
+        cropNode.setScale(0.5)
+        
+        
+        node.name = "Clouds"
+        node.position.x = 100
+        node.position.y = 0
+        node.zPosition = 2
+        node.advanceSimulationTime(60)
+        //node.setScale(0.6)
+        
+        cropNode.addChild(node)
+        
+ 
+        //let cropNode = SKSpriteNode(fileNamed: "enemy1")!
+        cropNode.setScale(0.5)
+        return node
+    }()
+//    lazy var Continents: SKEmitterNode = {
+//        let node = SKEmitterNode(fileNamed: "Continents")
+//        
+//    }()
     
     //let earth = SKSpriteNode(imageNamed: "Earth")
     
@@ -70,7 +132,7 @@ class GameScene: SKScene{
         
 
         
-        Atmosphere.addChild(Planet)
+        
         addChild(Atmosphere)
         
         

@@ -11,6 +11,17 @@ import Foundation
 
 
 class GameScene: SKScene{
+    @Binding var StartPressed: Bool
+    init(_ button: Binding<Bool>){
+        _StartPressed = button
+        super.init(size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        _StartPressed = .constant(false)
+        super.init(coder: aDecoder)
+    }
     lazy var earth: SKSpriteNode = {
         let node = SKSpriteNode(imageNamed: "Earth")
         node.name = "earth"
@@ -32,7 +43,6 @@ class GameScene: SKScene{
 
         
         let planet = SKSpriteNode(imageNamed: "Planet")
-      //  node.addChild(planet)
         print(String(planet.parent?.name ?? "No parent"))
         planet.name = "Planet"
         planet.position.x = 0
@@ -40,7 +50,7 @@ class GameScene: SKScene{
         
         planet.size.height = node.frame.height
         planet.size.width = node.frame.width
-//
+        
         let shadow = SKSpriteNode(imageNamed: "Shadow")
         planet.addChild(shadow)
         shadow.name = "Shadow"
@@ -53,21 +63,20 @@ class GameScene: SKScene{
         planet.addChild(Continents)
         planet.addChild(Clouds)
         planet.zPosition = 1
-//        Clouds.targetNode = planet
-//        Clouds.zPosition = 1
+
         
         let cropNode = SKCropNode()
         
         let maskNode = SKShapeNode(circleOfRadius: planet.size.width/2.0 - 10)
         maskNode.fillColor = .white
 
-        cropNode.maskNode = maskNode//SKSpriteNode(color: .white, size: planet.size)
+        cropNode.maskNode = maskNode
         cropNode.position = CGPoint(x: 0, y: 0)
         cropNode.zPosition = 3
         cropNode.addChild(planet)
 
         node.addChild(cropNode)
-
+        
         
         return node
     }()
@@ -115,9 +124,16 @@ class GameScene: SKScene{
         return node
         
     }()
+    lazy var Blur: SKShapeNode = {
+        let node = SKShapeNode(rect: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
+        node.zPosition = 5
+        node.fillColor = .white
+        node.name = "blur"
+        node.alpha = 0
+        return node
+    }()
     
-    //let earth = SKSpriteNode(imageNamed: "Earth")
-    
+   
     override func didMove(to view: SKView) {
         if let particles = SKEmitterNode(fileNamed: "StarField") {
             particles.position = CGPoint(x: UIScreen.main.bounds.width/2, y: 0)
@@ -130,25 +146,22 @@ class GameScene: SKScene{
         
         
         addChild(Atmosphere)
-        
+        addChild(Blur)
         
     }
-    
-    
-    
+    func touchDown(atPoint pos : CGPoint){
+        if Atmosphere.contains(pos){
+            let scale = SKAction.scale(by: 10, duration: 3)
+            scale.timingMode = .easeInEaseOut
+            Atmosphere.run(scale)
+            Blur.run(SKAction.fadeIn(withDuration: 2)){
+                self.StartPressed.toggle()
+            }
+        }
+    }
+    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches { touchDown(atPoint: t.location(in: self)) }
+    }
 }
 
-struct Stars: View{
-    var gameScene: SKScene {
-        let scene = GameScene()
-        scene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        return scene
-    }
-    
-    var body: some View {
-        ZStack{
-            SpriteView(scene: gameScene)
-        }.ignoresSafeArea()
-            .preferredColorScheme(.dark)
-    }
-}
+

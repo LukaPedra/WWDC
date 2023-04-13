@@ -12,6 +12,7 @@ import Foundation
 
 class GameScene: SKScene{
     @Binding var StartPressed: Bool
+    var pressed = false
     init(_ button: Binding<Bool>){
         _StartPressed = button
         super.init(size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
@@ -43,7 +44,6 @@ class GameScene: SKScene{
 
         
         let planet = SKSpriteNode(imageNamed: "Planet")
-        print(String(planet.parent?.name ?? "No parent"))
         planet.name = "Planet"
         planet.position.x = 0
         planet.position.y = 0
@@ -84,7 +84,6 @@ class GameScene: SKScene{
     lazy var Planet: SKSpriteNode = {
         
         let node = SKSpriteNode(imageNamed: "Planet")
-        print(String(parent?.name ?? "No parent"))
         node.name = "Planet"
         node.position.x = (parent?.position.x ?? 0)!
         node.position.y = (parent?.position.y ?? 0)!
@@ -150,7 +149,8 @@ class GameScene: SKScene{
         
     }
     func touchDown(atPoint pos : CGPoint){
-        if Atmosphere.contains(pos){
+        if (Atmosphere.contains(pos) && pressed == false){
+            pressed = true
             let scale = SKAction.scale(by: 10, duration: 3)
             scale.timingMode = .easeInEaseOut
             Atmosphere.run(scale)

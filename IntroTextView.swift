@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct IntroTextView: View {
+    @Binding var GameStarted: Bool
     var TextArray: [String] = ["Ah o planeta bla bla bla","é usa vez de bla bla bla ","vamos lá!"]
     @State var index: Int = 0
     var body: some View {
@@ -28,6 +29,9 @@ struct IntroTextView: View {
             if (index < (TextArray.count) - 1){
                 print(index)
                 index += 1
+            }
+            else{
+                GameStarted.toggle()
             }
             
         }

@@ -11,6 +11,7 @@ struct MonitorView: View {
     @State var yposition = -300.0
     @State var alpha = 0.0
     @State var ShowText = false
+    @Binding var GameStarted: Bool
     var body: some View {
         Image("Screen")
             .resizable()
@@ -21,12 +22,12 @@ struct MonitorView: View {
             .animation(.easeIn(duration: 3), value: alpha)
             .overlay{
                 if (ShowText == true){
-                    IntroTextView()
+                    IntroTextView(GameStarted: $GameStarted)
         
                 }
             }
             .onAppear{
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.8) {
                     // your code here
                     ShowText = true
                 }
@@ -36,8 +37,8 @@ struct MonitorView: View {
     }
 }
 
-struct MonitorView_Previews: PreviewProvider {
-    static var previews: some View {
-        MonitorView()
-    }
-}
+//struct MonitorView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        MonitorView()
+//    }
+//}

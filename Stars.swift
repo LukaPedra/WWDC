@@ -15,7 +15,7 @@ struct Stars: View{
     @State var StartPressed: Bool = false
     @State var GameStarted: Bool = false
     var gameScene: SKScene {
-        let scene = GameScene($StartPressed)
+        let scene = Menu($StartPressed)
         scene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         return scene
     }

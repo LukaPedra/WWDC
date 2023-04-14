@@ -10,7 +10,7 @@ import SwiftUI
 import Foundation
 
 
-class GameScene: SKScene{
+class Menu: SKScene{
     @Binding var StartPressed: Bool
     var pressed = false
     init(_ button: Binding<Bool>){

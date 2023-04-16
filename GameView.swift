@@ -27,21 +27,25 @@ class GameScene: SKScene{
     let resource3 = SKSpriteNode(color: .orange, size: CGSize(width: 50, height: 50))
     let resource4 = SKSpriteNode(color: .purple, size: CGSize(width: 50, height: 50))
     
+    var background = SKSpriteNode(imageNamed: "mapa.vazio")
+
     //let resources: [SKSpriteNode] = [resource1, resource2,resource3,resource4]
     
     var selectedNode: SKNode?
     var originalPosition: CGPoint?
     
     override func didMove(to view: SKView) {
-        
+        background.position = CGPoint(x: frame.size.width / 2, y: frame.size.height / 2)
+                addChild(background)
+        background.size = self.size
         // Position the areas
-        area1.position = CGPoint(x: 100, y: 100)
+        area1.position = CGPoint(x: 215, y: 425)
         area1.name = "blue"
-        area2.position = CGPoint(x: 300, y: 100)
+        area2.position = CGPoint(x: 371, y: 540)
         area2.name = "red"
-        area3.position = CGPoint(x: 100, y: 300)
+        area3.position = CGPoint(x: 540, y: 401)
         area3.name = "green"
-        area4.position = CGPoint(x: 300, y: 300)
+        area4.position = CGPoint(x: 827, y: 122)
         area4.name = "yellow"
         
         // Add the areas to the scene
@@ -57,20 +61,20 @@ class GameScene: SKScene{
         let resource4 = SKSpriteNode(color: .yellow, size: CGSize(width: 50, height: 50))
         
         // Set up the resources
-        resource1.position = CGPoint(x: frame.midX - 100, y: frame.midY)
+        resource1.position = CGPoint(x: 60, y: 100)
         resource1.name = "resource.red"
         addChild(resource1)
         
-        resource2.position = CGPoint(x: frame.midX - 50, y: frame.midY + 100)
+        resource2.position = CGPoint(x: 80, y: 100)
         resource2.name = "resource.green"
 
         addChild(resource2)
         
-        resource3.position = CGPoint(x: frame.midX + 50, y: frame.midY - 100)
+        resource3.position = CGPoint(x: 100, y: 100)
         resource3.name = "resource.blue"
         addChild(resource3)
         
-        resource4.position = CGPoint(x: frame.midX + 100, y: frame.midY)
+        resource4.position = CGPoint(x: 120, y: 100)
         resource4.name = "resource.yellow"
 
         addChild(resource4)
@@ -85,7 +89,7 @@ class GameScene: SKScene{
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-        
+        print(touch.location(in: self))
         let location = touch.location(in: self)
         let touchedNode = nodes(at: location).first
         
@@ -100,6 +104,9 @@ class GameScene: SKScene{
         
         let location = touch.location(in: self)
         selectedNode.position = location
+//        if selectedNode.contains(area1.position){
+//            area1.scale(to: CGSize)
+//        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -112,7 +119,12 @@ class GameScene: SKScene{
                 if (selectedNode.name == "resource.blue"){
                     print("Blue on Blue")
                     timeLeft += timeAdded
+                    //resource 3 = blue
+                    let randomResource = [resource1,resource2,resource4].randomElement()!
+                    randomResource.position = originalPosition
+                    addChild(randomResource)
                     
+                    selectedNode.removeFromParent()
                 } else {
                     timeLeft -= timeAdded
 
@@ -122,7 +134,12 @@ class GameScene: SKScene{
                 if (selectedNode.name == "resource.red"){
                     print("Red on Red")
                     timeLeft += timeAdded
-
+                    //resource1 = red
+                    let randomResource = [resource2,resource3,resource4].randomElement()!
+                    randomResource.position = originalPosition
+                    addChild(randomResource)
+                    
+                    selectedNode.removeFromParent()
                 } else {
                     timeLeft -= timeAdded
 
@@ -133,7 +150,12 @@ class GameScene: SKScene{
                 if selectedNode.name == "resource.green" {
                     print("Green on Green")
                     timeLeft += timeAdded
-
+                    //resource2 = green
+                    let randomResource = [resource1,resource3,resource4].randomElement()!
+                    randomResource.position = originalPosition
+                    addChild(randomResource)
+                    
+                    selectedNode.removeFromParent()
                 } else {
                     timeLeft -= timeAdded
 
@@ -144,6 +166,12 @@ class GameScene: SKScene{
                 if selectedNode.name == "resource.yellow" {
                     print("Yelow on yellow")
                     timeLeft += timeAdded
+                    //resource4 = yellow
+                    let randomResource = [resource2,resource3,resource1].randomElement()!
+                    randomResource.position = originalPosition
+                    addChild(randomResource)
+                    
+                    selectedNode.removeFromParent()
                 } else {
                     timeLeft -= timeAdded
                 }
@@ -185,6 +213,7 @@ struct GameView: UIViewRepresentable {
     }
     
     func updateUIView(_ uiView: SKView, context: Context) {}
+    
 }
 
 struct GameView_Previews: PreviewProvider {

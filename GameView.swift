@@ -11,22 +11,21 @@ import Foundation
 
 class GameScene: SKScene{
     let timeAdded: Double = 1.5
+    let hitboxHeight = 150
+    let hitboxWitdth = 150
+    
     let area1 = SKSpriteNode(color: .blue, size: CGSize(width: 100, height: 100))
-    let area2 = SKSpriteNode(color: .red, size: CGSize(width: 100, height: 100))
+    let area2 = SKSpriteNode(color: .clear, size: CGSize(width: 100, height: 100))
     let area3 = SKSpriteNode(color: .green, size: CGSize(width: 100, height: 100))
     let area4 = SKSpriteNode(color: .yellow, size: CGSize(width: 100, height: 100))
     
+    
+//    area1.addChild(spriteArea1)
     var timeLeft: TimeInterval = 10
     var timeLabel = SKLabelNode(text: "Time: 10")
     let meterHeight: CGFloat = 200 // height of the meter
     var meterBar: SKShapeNode? // the meter bar itself
-    
-    // Declare the resources
-//    //let resource1 = SKSpriteNode(color: .red, size: CGSize(width: 50, height: 50))
-//    let resource2 = SKSpriteNode(color: .green, size: CGSize(width: 50, height: 50))
-//    let resource3 = SKSpriteNode(color: .blue, size: CGSize(width: 50, height: 50))
-//    let resource4 = SKSpriteNode(color: .yellow, size: CGSize(width: 50, height: 50))
-    
+   
     var background = SKSpriteNode(imageNamed: "mapa.vazio")
 
     //let resources: [SKSpriteNode] = [resource1, resource2,resource3,resource4]
@@ -60,14 +59,21 @@ class GameScene: SKScene{
     }()
     
     override func didMove(to view: SKView) {
+        let spriteArea2 = SKSpriteNode(imageNamed: "Platform")
+        spriteArea2.size.height = 180
+        spriteArea2.size.width = 180
+        spriteArea2.zPosition = 3
         background.position = CGPoint(x: frame.size.width / 2, y: frame.size.height / 2)
                 addChild(background)
         background.size = self.size
         // Position the areas
         area1.position = CGPoint(x: 215, y: 425)
         area1.name = "blue"
+        
         area2.position = CGPoint(x: 371, y: 540)
         area2.name = "red"
+
+        area2.addChild(spriteArea2)
         area3.position = CGPoint(x: 540, y: 401)
         area3.name = "green"
         area4.position = CGPoint(x: 827, y: 122)
@@ -107,32 +113,32 @@ class GameScene: SKScene{
         let location = touch.location(in: self)
         selectedNode.position = location
         let pulseAction = SKAction.sequence([
-            SKAction.scale(to: 1.2, duration: 0.3),
-            SKAction.scale(to: 1.0, duration: 0.3)
+            SKAction.scale(to: 1.2, duration: 0.3)//,
+            //SKAction.scale(to: 1.0, duration: 0.3)
         ])
         if selectedNode.contains(area1.position){
-            area1.run(SKAction.repeatForever(pulseAction))
+            area1.run(pulseAction)
         } else{
             area1.removeAllActions()
             area1.run(SKAction.scale(to: 1.0, duration: 0.10))
 
         }
         if selectedNode.contains(area2.position){
-            area2.run(SKAction.repeatForever(pulseAction))
+            area2.run(pulseAction)
         } else {
             area2.removeAllActions()
             area2.run(SKAction.scale(to: 1.0, duration: 0.10))
 
         }
         if selectedNode.contains(area3.position){
-            area3.run(SKAction.repeatForever(pulseAction))
+            area3.run(pulseAction)
         } else {
             area3.removeAllActions()
             area3.run(SKAction.scale(to: 1.0, duration: 0.10))
 
         }
         if selectedNode.contains(area4.position){
-            area4.run(SKAction.repeatForever(pulseAction))
+            area4.run(pulseAction)
         } else {
             area4.removeAllActions()
             area4.run(SKAction.scale(to: 1.0, duration: 0.10))
@@ -145,6 +151,10 @@ class GameScene: SKScene{
         guard let selectedNode = selectedNode else { return }
         print("let go")
         
+        area1.removeAllActions()
+        area2.removeAllActions()
+        area3.removeAllActions()
+        area4.removeAllActions()
         if let originalPosition = originalPosition {
             if selectedNode.contains(area1.position) {
                 print("at blue")

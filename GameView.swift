@@ -11,22 +11,37 @@ import Foundation
 
 class GameScene: SKScene{
     let timeAdded: Double = 1.5
-    let area1 = SKSpriteNode(color: .blue, size: CGSize(width: 100, height: 100))
-    let area2 = SKSpriteNode(color: .red, size: CGSize(width: 100, height: 100))
-    let area3 = SKSpriteNode(color: .green, size: CGSize(width: 100, height: 100))
-    let area4 = SKSpriteNode(color: .yellow, size: CGSize(width: 100, height: 100))
+    let hitboxHeight = 200
+    let hitboxWitdth = 150
     
+    let clouds = SKEmitterNode(fileNamed: "CloudsMap")!
+    
+	let astronaut = SKSpriteNode(imageNamed: "astronaut")
+	
+	let UI = SKSpriteNode(imageNamed: "UI")
+	
+	let resourceInventory = SKSpriteNode(imageNamed: "Resource inventory")
+	
+    let area1 = SKSpriteNode(color: .clear, size: CGSize(width: 100, height: 100))
+    let WindTurbine = SKSpriteNode(imageNamed: "Wind Turbine")
+    
+    let area2 = SKSpriteNode(color: .clear, size: CGSize(width: 100, height: 100))
+    let OilPlatform = SKSpriteNode(imageNamed: "Platform")
+
+    let area3 = SKSpriteNode(color: .clear, size: CGSize(width: 100, height: 100))
+    let SolarPanel = SKSpriteNode(imageNamed: "Solar")
+    
+    let area4 = SKSpriteNode(color: .clear, size: CGSize(width: 100, height: 100))
+    let Factory = SKSpriteNode(imageNamed: "Factory")
+    
+    
+//    area1.addChild(spriteArea1)
+	var timer: TimeInterval = 2
     var timeLeft: TimeInterval = 10
-    var timeLabel = SKLabelNode(text: "Time: 10")
-    let meterHeight: CGFloat = 200 // height of the meter
+	var timeLabel: SKLabelNode!
+    let meterHeight: CGFloat = 280 // height of the meter
     var meterBar: SKShapeNode? // the meter bar itself
-    
-    // Declare the resources
-//    //let resource1 = SKSpriteNode(color: .red, size: CGSize(width: 50, height: 50))
-//    let resource2 = SKSpriteNode(color: .green, size: CGSize(width: 50, height: 50))
-//    let resource3 = SKSpriteNode(color: .blue, size: CGSize(width: 50, height: 50))
-//    let resource4 = SKSpriteNode(color: .yellow, size: CGSize(width: 50, height: 50))
-    
+   
     var background = SKSpriteNode(imageNamed: "mapa.vazio")
 
     //let resources: [SKSpriteNode] = [resource1, resource2,resource3,resource4]
@@ -34,60 +49,118 @@ class GameScene: SKScene{
     var selectedNode: SKNode?
     var originalPosition: CGPoint?
     
-    lazy var resource1: SKSpriteNode = {
-       let node = SKSpriteNode(color: .red, size: CGSize(width: 50, height: 50))
-       node.name = "resource.red"
-       node.position = CGPoint(x: 60, y: 100)
-       return node
+    lazy var resourceCo2: SKSpriteNode = {
+        let node = SKSpriteNode(imageNamed: "Co2")
+        node.size = CGSize(width: 50, height: 50)
+        node.name = "resource.co2"
+        node.position = CGPoint(x: 100, y: 100)
+        return node
     }()
-    lazy var resource2: SKSpriteNode = {
-       let node = SKSpriteNode(color: .green, size: CGSize(width: 50, height: 50))
-       node.name = "resource.green"
-       node.position = CGPoint(x: 80, y: 100)
-       return node
+    lazy var resourceSun: SKSpriteNode = {
+        let node = SKSpriteNode(imageNamed: "Sun")
+        node.size = CGSize(width: 50, height: 50)
+        node.name = "resource.sun"
+		node.position = CGPoint(x: 100, y: 100)
+        return node
     }()
-    lazy var resource3: SKSpriteNode = {
-       let node = SKSpriteNode(color: .blue, size: CGSize(width: 50, height: 50))
-       node.name = "resource.blue"
-       node.position = CGPoint(x: 100, y: 100)
-       return node
+    lazy var resourceWind: SKSpriteNode = {
+        let node = SKSpriteNode(imageNamed: "Wind")
+        node.size = CGSize(width: 50, height: 50)
+        node.name = "resource.wind"
+		node.position = CGPoint(x: 100, y: 100)
+        return node
     }()
-    lazy var resource4: SKSpriteNode = {
-       let node = SKSpriteNode(color: .yellow, size: CGSize(width: 50, height: 50))
-       node.name = "resource.yellow"
-       node.position = CGPoint(x: 120, y: 100)
-       return node
+    lazy var resourceWater: SKSpriteNode = {
+        let node = SKSpriteNode(imageNamed: "Water")
+        node.size = CGSize(width: 50, height: 50)
+        node.name = "resource.water"
+		node.position = CGPoint(x: 100, y: 100)
+        return node
     }()
     
     override func didMove(to view: SKView) {
+		astronaut.position = CGPoint(x: frame.maxX - 80, y: frame.minY + 210)
+		astronaut.size = CGSize(width: 180, height: 200)
+		astronaut.zPosition = 11
+		addChild(astronaut)
+		
+		UI.size = self.size
+		UI.position = CGPoint(x: frame.size.width / 2, y: frame.size.height / 2)
+		UI.zPosition = 10
+		addChild(UI)
+		
+		timeLabel = SKLabelNode(fontNamed: "Helvetica")
+		timeLabel.fontSize = 20
+		timeLabel.fontColor = .black
+		timeLabel.horizontalAlignmentMode = .right
+		timeLabel.text = "Time: \(Int(timeLeft))"
+		timeLabel.position = CGPoint(x: size.width - 30, y: size.height - 65)
+		timeLabel.zPosition = 11
+		addChild(timeLabel)
+		
+        clouds.zPosition = 9
+        clouds.position = CGPoint(x: frame.maxX, y: frame.minY)
+        clouds.zRotation = CGFloat.pi * 5 / 6
+        clouds.advanceSimulationTime(120)
+        clouds.xScale = -1.0
+        addChild(clouds)
         background.position = CGPoint(x: frame.size.width / 2, y: frame.size.height / 2)
-                addChild(background)
+        addChild(background)
         background.size = self.size
-        // Position the areas
-        area1.position = CGPoint(x: 215, y: 425)
+        
+		resourceInventory.position = CGPoint(x: 60, y: 100)
+		resourceInventory.size = CGSize(width: 150, height: 60)
+		addChild(resourceInventory)
+		
+        
+        //Wind turbine
+        area1.position = CGPoint(x: 195, y: 455)
         area1.name = "blue"
+        WindTurbine.size.height = 260 / 2
+        WindTurbine.size.width = 180 / 2
+        WindTurbine.zPosition = 3
+        area1.addChild(WindTurbine)
+        
+        //Oil platform
         area2.position = CGPoint(x: 371, y: 540)
         area2.name = "red"
+        OilPlatform.size.height = 180
+        OilPlatform.size.width = 180
+        OilPlatform.zPosition = 3
+        area2.addChild(OilPlatform)
+        
+        //Solar
         area3.position = CGPoint(x: 540, y: 401)
         area3.name = "green"
+        SolarPanel.size.height = 100
+        SolarPanel.size.width = 100
+        SolarPanel.zPosition = 3
+        area3.addChild(SolarPanel)
+        
         area4.position = CGPoint(x: 827, y: 122)
         area4.name = "yellow"
+        Factory.size.height = 80
+        Factory.size.width = 80
+        area4.addChild(Factory)
+
+        
         
         // Add the areas to the scene
         addChild(area1)
         addChild(area2)
         addChild(area3)
         addChild(area4)
-        
-        addChild(resource1)
+        resourceCo2.zPosition = 10
+        addChild(resourceCo2)
         
 
         
         // create the meter bar as a red rectangle
         let meterRect = CGRect(x: view.frame.width - 30, y: view.frame.height - meterHeight - 20, width: 20, height: meterHeight)
-        meterBar = SKShapeNode(rect: meterRect, cornerRadius: 5)
+        meterBar = SKShapeNode(rect: meterRect, cornerRadius: meterHeight/2)
         meterBar?.fillColor = SKColor.red
-        meterBar?.position = CGPoint(x: view.frame.width - 30, y: view.frame.height/2 - 70)
+        meterBar?.position = CGPoint(x: view.frame.width - 35, y: view.frame.height/2 - 40)
+		meterBar?.zPosition = 11
         addChild(meterBar!)
     }
     
@@ -107,32 +180,32 @@ class GameScene: SKScene{
         let location = touch.location(in: self)
         selectedNode.position = location
         let pulseAction = SKAction.sequence([
-            SKAction.scale(to: 1.2, duration: 0.3),
-            SKAction.scale(to: 1.0, duration: 0.3)
+            SKAction.scale(to: 1.2, duration: 0.3)//,
+            //SKAction.scale(to: 1.0, duration: 0.3)
         ])
         if selectedNode.contains(area1.position){
-            area1.run(SKAction.repeatForever(pulseAction))
+            area1.run(pulseAction)
         } else{
             area1.removeAllActions()
             area1.run(SKAction.scale(to: 1.0, duration: 0.10))
 
         }
         if selectedNode.contains(area2.position){
-            area2.run(SKAction.repeatForever(pulseAction))
+            area2.run(pulseAction)
         } else {
             area2.removeAllActions()
             area2.run(SKAction.scale(to: 1.0, duration: 0.10))
 
         }
         if selectedNode.contains(area3.position){
-            area3.run(SKAction.repeatForever(pulseAction))
+            area3.run(pulseAction)
         } else {
             area3.removeAllActions()
             area3.run(SKAction.scale(to: 1.0, duration: 0.10))
 
         }
         if selectedNode.contains(area4.position){
-            area4.run(SKAction.repeatForever(pulseAction))
+            area4.run(pulseAction)
         } else {
             area4.removeAllActions()
             area4.run(SKAction.scale(to: 1.0, duration: 0.10))
@@ -145,12 +218,16 @@ class GameScene: SKScene{
         guard let selectedNode = selectedNode else { return }
         print("let go")
         
+        area1.removeAllActions()
+        area2.removeAllActions()
+        area3.removeAllActions()
+        area4.removeAllActions()
         if let originalPosition = originalPosition {
             if selectedNode.contains(area1.position) {
                 print("at blue")
-                if (selectedNode.name == "resource.blue"){
+                if (selectedNode.name == "resource.wind"){
                     print("Blue on Blue")
-                    timeLeft += timeAdded
+					timerAdd()
                     //resource 3 = blue
 
                     let drop = dropResource(selectedNode)
@@ -162,9 +239,9 @@ class GameScene: SKScene{
                 }
             }
             else if selectedNode.contains(area2.position){
-                if (selectedNode.name == "resource.red"){
+                if (selectedNode.name == "resource.co2"){
                     print("Red on Red")
-                    timeLeft += timeAdded
+					timerAdd()
                     //resource1 = red
 
                     let drop = dropResource(selectedNode)
@@ -177,9 +254,9 @@ class GameScene: SKScene{
             }
             else if selectedNode.contains(area3.position){
                 print("at green")
-                if selectedNode.name == "resource.green" {
+                if selectedNode.name == "resource.sun" {
                     print("Green on Green")
-                    timeLeft += timeAdded
+					timerAdd()
 
                     
                     let drop = dropResource(selectedNode)
@@ -192,10 +269,9 @@ class GameScene: SKScene{
             }
             else if selectedNode.contains(area4.position) {
                 print("at yellow")
-                if selectedNode.name == "resource.yellow" {
+                if selectedNode.name == "resource.water" {
                     print("Yelow on yellow")
-                    timeLeft += timeAdded
-          
+					timerAdd()
                     
                     let drop = dropResource(selectedNode)
                     selectedNode.removeFromParent()
@@ -213,10 +289,17 @@ class GameScene: SKScene{
         self.originalPosition = nil
     }
     override func update(_ currentTime: TimeInterval) {
-        if timeLeft > 0 {
-            timeLeft -= 0.005
+		timeLeft -= 0.01
+		timer -= 0.01
+        if timeLeft <= 0 {
+            let nextScene = GameOverScene(size: size)
+			view?.presentScene(nextScene, transition: .doorsCloseVertical(withDuration: 0.5))
         }
-        timeLabel.text =  "Time: \(Int(timeLeft))"
+		if timer <= 0 {
+			let nextScene = VictoryScene(size: size)
+			view?.presentScene(nextScene,transition: .crossFade(withDuration: 0.4))
+		}
+        timeLabel.text =  "Time left: \(Int(timer))"
         
         let meterHeightLeft = max(0, CGFloat(timeLeft) / 10.0 * meterHeight)
         meterBar?.path = CGPath(rect: CGRect(x: 0, y: 0, width: 20, height: meterHeightLeft), transform: nil)
@@ -224,7 +307,7 @@ class GameScene: SKScene{
     // Rest of your scene code goes here...
     func dropResource(_ node: SKNode) -> SKSpriteNode{
         var index = 0
-        var resources: [SKSpriteNode] = [resource1,resource2,resource3,resource4]
+        var resources: [SKSpriteNode] = [resourceCo2,resourceSun,resourceWind,resourceWater]
         for resource in resources {
             if resource.name == node.name{
                
@@ -234,10 +317,20 @@ class GameScene: SKScene{
             index = index + 1
         }
         let node = resources.randomElement()?.copy()  as! SKSpriteNode
-        node.position = CGPoint(x: frame.midX, y: frame.midY)
+		node.position = CGPoint(x: 0, y: 100)
+        node.zPosition = 10
+		node.run(SKAction.move(to: CGPoint(x: 100, y: 100), duration: 0.5))
+		
         return node
 
     }
+	func timerAdd(){
+		if (timeLeft + timeAdded) > 10 {
+			timeLeft = 10
+		} else {
+			timeLeft += timeAdded
+		}
+	}
 }
 
 struct GameView: UIViewRepresentable {

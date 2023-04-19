@@ -5,8 +5,8 @@ import SwiftUI
 struct MyApp: App {
     var body: some Scene {
         WindowGroup {
-            //Stars()
-            GameView()
+            Stars()
+            //GameView()
                 .ignoresSafeArea()
         }
     }

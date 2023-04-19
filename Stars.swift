@@ -14,6 +14,7 @@ struct Stars: View{
     @State private var animationAmount: Double = 0.0
     @State var StartPressed: Bool = false
     @State var GameStarted: Bool = false
+    @State var index = 0
     var gameScene: SKScene {
         let scene = Menu($StartPressed)
         scene.size = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
@@ -29,15 +30,17 @@ struct Stars: View{
                             .animation(.easeIn)
                     }
                     
-                    MonitorView(GameStarted: $GameStarted)
-                    //TypeWriterView(finalText: "ausyaiuyyiaskulgfluashdulaldiualuisyduaildylIUYDLUSAydlDUYLDSusyiu")
+                    MonitorView(GameStarted: $GameStarted,index: $index)
                     VStack{
                         Spacer()
                         HStack{
                             Spacer()
-                            AstronautView()
-                            //.padding(.trailing,220)
-                                .frame(width: 400,height: 400)
+                            if(!(index == 2 || index == 3)){
+                                AstronautView()
+                                //.padding(.trailing,220)
+                                    .frame(width: 400,height: 400)
+                            } 
+                            
                             
                         }
                         

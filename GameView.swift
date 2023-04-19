@@ -36,7 +36,7 @@ class GameScene: SKScene{
     
     
 //    area1.addChild(spriteArea1)
-	var timer: TimeInterval = 2
+	var timer: TimeInterval = 25
     var timeLeft: TimeInterval = 10
 	var timeLabel: SKLabelNode!
     let meterHeight: CGFloat = 280 // height of the meter
@@ -292,6 +292,7 @@ class GameScene: SKScene{
 		timeLeft -= 0.01
 		timer -= 0.01
         if timeLeft <= 0 {
+            print("aaa")
             let nextScene = GameOverScene(size: size)
 			view?.presentScene(nextScene, transition: .doorsCloseVertical(withDuration: 0.5))
         }

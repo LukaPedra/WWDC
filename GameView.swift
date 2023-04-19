@@ -36,6 +36,7 @@ class GameScene: SKScene{
     
     
 //    area1.addChild(spriteArea1)
+	var timer: TimeInterval = 2
     var timeLeft: TimeInterval = 10
 	var timeLabel: SKLabelNode!
     let meterHeight: CGFloat = 280 // height of the meter
@@ -88,7 +89,7 @@ class GameScene: SKScene{
 		UI.zPosition = 10
 		addChild(UI)
 		
-		timeLabel = SKLabelNode(fontNamed: "Helvetica Neue-Bold")
+		timeLabel = SKLabelNode(fontNamed: "Helvetica")
 		timeLabel.fontSize = 20
 		timeLabel.fontColor = .black
 		timeLabel.horizontalAlignmentMode = .right
@@ -288,12 +289,17 @@ class GameScene: SKScene{
         self.originalPosition = nil
     }
     override func update(_ currentTime: TimeInterval) {
-		//timeLeft -= 0.01
+		timeLeft -= 0.01
+		timer -= 0.01
         if timeLeft <= 0 {
             let nextScene = GameOverScene(size: size)
 			view?.presentScene(nextScene, transition: .doorsCloseVertical(withDuration: 0.5))
         }
-        timeLabel.text =  "Time left: \(Int(timeLeft))"
+		if timer <= 0 {
+			let nextScene = VictoryScene(size: size)
+			view?.presentScene(nextScene,transition: .crossFade(withDuration: 0.4))
+		}
+        timeLabel.text =  "Time left: \(Int(timer))"
         
         let meterHeightLeft = max(0, CGFloat(timeLeft) / 10.0 * meterHeight)
         meterBar?.path = CGPath(rect: CGRect(x: 0, y: 0, width: 20, height: meterHeightLeft), transform: nil)

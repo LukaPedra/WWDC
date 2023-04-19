@@ -14,7 +14,7 @@ class GameOverScene: SKScene{
         let label = SKLabelNode(text: "You lose...")
         label.fontName = "Helvetica"
         label.fontSize = 40
-        label.position = CGPoint(x: view.frame.midX, y: view.frame.midY)
+        label.position = CGPoint(x: view.frame.midX, y: view.frame.midY + 80)
         label.zPosition = 1
         addChild(label)
         
@@ -25,33 +25,28 @@ class GameOverScene: SKScene{
         stars.zPosition = 0
         addChild(stars)
         
-        let button = ButtonNode(imageNamed: "Button")
-        button.position = CGPoint(x: frame.midX, y: frame.minY - 100)
+        let button = SKSpriteNode(imageNamed: "Button")
+        button.position = CGPoint(x: frame.midX, y: frame.midY - 70)
+        button.name = "Button"
+        button.size = CGSize(width: 150, height: 80)
+        button.zPosition = 1
+        let text = SKLabelNode(text: "Try Again?")
+        text.fontColor = .white
+        text.fontName = "Helvetica"
+        text.fontSize = 20
+        text.zPosition = 2
+        button.addChild(text)
+        addChild(button)
+        
     }
-}
-class ButtonNode: SKSpriteNode {
-    init(imageNamed: String) {
-        let texture = SKTexture(imageNamed: imageNamed)
-        super.init(texture: texture, color: .clear, size: texture.size())
-        isUserInteractionEnabled = true
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        alpha = 0.5 // dim the button when it's touched
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        alpha = 1.0 // reset the button's alpha when touch ends
-        if let touch = touches.first, let parent = parent {
-            let touchLocation = touch.location(in: parent)
-            if contains(touchLocation) {
-                // button was tapped, handle action here
-                
-            }
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        let touchedNode = nodes(at: location).first
+        let gameScene = GameScene(size: self.size)
+        if touchedNode?.name == "Button"{
+            self.view?.presentScene(gameScene, transition: .fade(withDuration: 0.5))
         }
     }
 }
+

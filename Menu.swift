@@ -126,7 +126,7 @@ class Menu: SKScene{
     lazy var Blur: SKShapeNode = {
         let node = SKShapeNode(rect: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height))
         node.zPosition = 5
-        node.fillColor = .white
+        node.fillColor = .black
         node.name = "blur"
         node.alpha = 0
         return node
